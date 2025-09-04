@@ -1,64 +1,56 @@
 # BICT332 Lab 5 – Dimensionality Reduction
 
-This repository explores **dimensionality reduction techniques** including PCA, LDA, and Kernel PCA, and evaluates their effectiveness on datasets such as Wine and the half-moon dataset.
+This repo is for **Lab 5**, where we explored PCA, LDA, and Kernel PCA.  
+I tried out these dimensionality reduction methods on the Wine dataset and the half-moon dataset, and then compared how classifiers perform on the transformed data.  
 
 ---
 
-## Questions & Answers
+## Questions & My Answers
 
 ### 1. Explained Variance
-- **Explained variance** in PCA shows how much of the dataset’s total variance is captured by each principal component.  
-- As the number of components increases, the explained variance increases but with diminishing returns (the first few components usually explain most of the variance).  
-- To capture **95% of the variance** in the Wine dataset, typically **about 13–15 components** are required (depending on preprocessing and scaling).
+When you do PCA, each new component explains some part of the variance in the data. The first few components usually explain most of it, then after a while the extra ones don’t add much.  
+For the Wine dataset, I noticed you need around **13–15 components** to explain about **95% of the variance**. So instead of keeping all features, you can actually work with way fewer and still not lose much info.
 
 ---
 
 ### 2. PCA vs. LDA
-- **PCA** is unsupervised: it maximizes variance without considering class labels. Its components may not necessarily separate classes well.  
-- **LDA** is supervised: it explicitly maximizes class separability by projecting data onto axes that best separate class means while minimizing within-class variance.  
-- **Result:** LDA projections of the Wine dataset usually show **much better class separation** compared to PCA, which makes LDA more effective for **classification tasks** as a preprocessing step.
+- **PCA**: just looks at variance, doesn’t care about class labels. Good for general dimensionality reduction but not perfect for separating classes.  
+- **LDA**: uses class labels and tries to maximize the separation between them. That makes it way better for classification problems.  
+
+On the Wine dataset, the LDA projection showed clear separation between classes, while PCA was more about spreading data by variance. That’s why LDA usually wins if your goal is **classification**.
 
 ---
 
 ### 3. KPCA Gamma Parameter
-- The **γ (gamma)** parameter in RBF Kernel PCA controls the influence of each training example.  
-  - **Too small (e.g., 0.01):** The decision boundary becomes overly smooth, classes overlap, and data is not well separated.  
-  - **Too large (e.g., 100):** The kernel becomes too sensitive to individual points, leading to overfitting and noisy decision boundaries.  
-- A **moderate γ** value results in a good balance, transforming the half-moon dataset into a linearly separable form.
+In Kernel PCA with the RBF kernel, the **gamma (γ)** value is super important:  
+- **Too small (e.g. 0.01):** The boundary is too smooth, so classes don’t really separate well.  
+- **Too big (e.g. 100):** It overfits and gets too sensitive to noise, like drawing weird wiggly boundaries.  
+- A **medium gamma** worked best for the half-moon dataset, because it made the moons nicely separable without overfitting.
 
 ---
 
 ### 4. Classifier Performance
-- **Original Wine Data:** Classifiers like Logistic Regression or SVM perform reasonably well but may take longer due to high dimensionality.  
-- **PCA-Transformed Data:**  
-  - Reduces computation time.  
-  - Accuracy remains high if enough components are used (e.g., 95% explained variance).  
-- **LDA-Transformed Data:**  
-  - Best performance for classification tasks because LDA explicitly maximizes class separability.  
-  - Typically achieves higher accuracy than PCA while also reducing dimensionality.  
+I tested classifiers (like Logistic Regression and SVM) on three versions of the Wine dataset:  
+- **Original data:** Works okay but a bit heavy since the data is high-dimensional.  
+- **PCA data:** Runs faster, accuracy is still decent if you keep enough components (like the 95% variance rule).  
+- **LDA data:** Actually gave the best accuracy because LDA is literally built to separate classes.  
 
-**Observation:**  
-- PCA is better for unsupervised dimensionality reduction and visualization.  
-- LDA is superior when classification is the goal.  
-- Both improve efficiency compared to raw data.
+So yeah, PCA is nice for speed and general dimensionality reduction, but if you’re doing classification, LDA gives you that extra edge.
 
 ---
 
 ### 5. Limitations
-- **When PCA might fail:**  
-  - PCA assumes linear relationships.  
-  - It fails with **nonlinear structures**, e.g., the “two moons” dataset, where linear projections cannot separate the classes.  
-
-- **How KPCA addresses this:**  
-  - KPCA uses the **kernel trick** to map data into a higher-dimensional feature space where nonlinear structures can be separated linearly.  
-  - For example, KPCA with RBF kernel can transform the “two moons” dataset into a linearly separable form.
+- **Where PCA fails:** PCA struggles with nonlinear datasets. Example: the “two moons” dataset. PCA just flattens it and the classes overlap badly.  
+- **How KPCA fixes this:** KPCA uses kernels (like the RBF kernel) to project the data into a higher dimension where the classes become separable. That’s how the moons dataset can be untangled with KPCA.
 
 ---
 
-## Summary
-- **PCA** reduces dimensionality by capturing variance.  
-- **LDA** optimizes for class separation and generally outperforms PCA for classification.  
-- **KPCA** extends PCA to nonlinear datasets via kernel methods.  
-- Choice of method depends on whether the task is **unsupervised exploration** (PCA) or **supervised classification** (LDA/KPCA).
+## Wrap Up
+Here’s what I learned:  
+- PCA is good for reducing dimensions and keeping most of the variance.  
+- LDA is better when labels matter and you want the best class separation.  
+- KPCA is like the nonlinear version of PCA and works well when normal PCA can’t capture the structure.  
+
+Overall, this lab showed me why you wouldn’t just blindly use PCA all the time — it depends on what you’re trying to achieve.
 
 ---
